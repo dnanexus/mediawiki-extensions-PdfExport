@@ -82,7 +82,7 @@ function wfSpecialPdfNav (&$skintemplate, &$nav_urls, &$oldid, &$revid) {
 	if ($img_page > 0 || $img_page === false) {
 		$nav_urls['pdfprint'] = array(
 			'text' => wfMsg('pdf_print_link'),
-			'href' => $skintemplate->makeSpecialUrl('PdfPrint', "page=".wfUrlencode("{$skintemplate->thispage}" ))
+			'href' => $skintemplate->makeSpecialUrl('PdfPrint', "page=".wfUrlencode("{$skintemplate->titletxt}" ))
 		);
 	}
 	return true;
