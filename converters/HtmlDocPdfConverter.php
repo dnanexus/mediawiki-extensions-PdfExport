@@ -4,18 +4,18 @@ if (!defined('MEDIAWIKI'))
 
 /**
  * An HTMLDoc based conversion backend.
- * 
+ *
  * Installation:
  * HTMLDoc can be downloaded from here: http://www.htmldoc.org/ or on an Ubuntu based system you can do
  * apt-get install htmldoc. Once installed, set $wgPdfExportHtmlDocPath equal to the full path to the
  * htmldoc binary.
- * 
+ *
  * @author Thomas Hempel
  * @author Christian Neubauer
  */
 class HtmlDocPdfConverter extends PdfConverter {
 	/**
-	 * Sets up any necessary command line options. 
+	 * Sets up any necessary command line options.
 	 * @param Array $options An array of options.
 	 */
 	function initialize (&$options) {
@@ -25,7 +25,7 @@ class HtmlDocPdfConverter extends PdfConverter {
 		} else {
 			$options['orientation'] = " --portrait ";
 		}
-		
+
 		// Setup permissions
 		$perms = array();
 		$options['permissions'] = '';
@@ -47,7 +47,7 @@ class HtmlDocPdfConverter extends PdfConverter {
 			} else {
 				$options['permissions'] .= '--permissions ' . implode( ',', $perms ) . ' --encryption';
 			}
-			
+
 			if( $options['owner_pass'] != '' ) {
 				$options['permissions'] .= ' --owner-password ' . $options['owner_pass'];
 			}

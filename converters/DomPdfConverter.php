@@ -4,19 +4,19 @@ if (!defined('MEDIAWIKI'))
 
 /**
  * A DomPdf based conversion backend.
- * 
+ *
  * Installation:
  * DomPdf can be downloaded from here: http://code.google.com/p/dompdf/. Unzip the code into your
  * extension directory and set $wgPdfExportDomPdfConfigFile equal to the full path to the
  * dompdf_config.inc.php file.
- * 
+ *
  * @author Andreas Hagmann
  * @author Dumpydooby
  * @author Christian Neubauer
  */
 class DomPdfConverter extends PdfConverter {
 	/**
-	 * Sets up any necessary command line options. 
+	 * Sets up any necessary command line options.
 	 * @param Array $options An array of options.
 	 */
 	function initialize (&$options) {
@@ -78,12 +78,12 @@ SCRIPT;
 		$html = str_replace ('<img src="/skins/common/images/magnify-clip.png" width="15" height="11" alt="" />', "", $html);
 
 		// Work around slow PDF generation on large pages.
-		if( !ini_get('safe_mode') ) { 
-            set_time_limit(120); 
-        } 
-        
+		if( !ini_get('safe_mode') ) {
+            set_time_limit(120);
+        }
+
         // TODO disable warnings temporarily and then pipe them to the log.
-        
+
  		global $wgOut, $IP, $wgPdfExportAttach;
 		$wgOut->disable();
 		#$old_error_level = error_reporting( 0 );
@@ -115,7 +115,7 @@ SCRIPT;
 		$dompdf->stream(utf8_decode($options['filename']) . ".pdf", array('Attachment'=>($wgPdfExportAttach?1:0)));
 		#error_reporting( $old_error_level );
 	}
-	
+
 	/**
 	 * Get the HTML for a page. This function should filter out any code that the converter can't handle like <script> tags.
 	 * @param String $page The page name
@@ -159,7 +159,7 @@ SCRIPT;
 		$bhtml = preg_replace('/height="\d+"/', '', $bhtml);
 		// set upper limit for width
 		$bhtml = preg_replace('/width="(\d+)"/e', '"width=\"".($1> $wgPdfExportMaxImageWidth ? $wgPdfExportMaxImageWidth : $1)."\""', $bhtml);
-		
+
 		if ($wgPdfExportHttpsImages) {
 			$bhtml = str_replace('img src=\"https:\/\/','img src=\"http:\/\/', $bhtml);
 		}
@@ -167,7 +167,7 @@ SCRIPT;
 		$css = $this->getPageCss( $page, $options );
 		return "<html><head><title>" . utf8_decode($page) . "</title>$css</head><body>" . $bhtml . "</body></html>";
 	}
-	
+
 	/**
 	 * Get any CSS that needs to be added to the page for the PDF tool.
 	 * @param String $page The page name
@@ -175,7 +175,7 @@ SCRIPT;
 	 */
 	function getPageCss($page, $options) {
 		global $wgServer, $wgScriptPath;
-		
+
 		return '<link rel="stylesheet" href="'.$wgServer.$wgScriptPath.'/skins/vector/main-ltr.css?207" type="text/css" media="screen" />'.
 		'<link rel="stylesheet" href="'.$wgServer.$wgScriptPath.'/skins/common/shared.css?207" type="text/css" media="screen" />'.
 		'<link rel="stylesheet" href="'.$wgServer.$wgScriptPath.'/index.php?title=MediaWiki:Common.css&amp;usemsgcache=yes&amp;ctype=text%2Fcss&amp;smaxage=18000&amp;action=raw&amp;maxage=18000" type="text/css" media="all" />';

@@ -46,7 +46,7 @@ class MPdfConverter extends PdfConverter {
 
 		$mpdf = new mPDF();
 		$mpdf->WriteHTML($html);
-	
+
 		if( $options['pass_protect'] == 'yes' ) {
 			if( $options['perm_print'] == 'yes' ) {
 				$perms[] = 'print';
@@ -147,7 +147,7 @@ class MPdfConverter extends PdfConverter {
 EOD;
 		return $html;
 	}
-	
+
 	/**
 	 * Get any CSS that needs to be added to the page for the PDF tool.
 	 * @param String $page The page name
@@ -155,7 +155,7 @@ EOD;
 	 */
 	function getPageCss($page, $options) {
 		global $wgServer, $wgScriptPath;
-		
+
 		return '<link rel="stylesheet" href="'.$wgServer.$wgScriptPath.'/skins/vector/main-ltr.css?207" type="text/css" media="screen" />'.
 		'<link rel="stylesheet" href="'.$wgServer.$wgScriptPath.'/skins/common/shared.css?207" type="text/css" media="screen" />'.
 		'<link rel="stylesheet" href="'.$wgServer.$wgScriptPath.'/index.php?title=MediaWiki:Common.css&amp;usemsgcache=yes&amp;ctype=text%2Fcss&amp;smaxage=18000&amp;action=raw&amp;maxage=18000" type="text/css" media="all" />';

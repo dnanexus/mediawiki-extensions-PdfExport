@@ -4,10 +4,10 @@ if (!defined('MEDIAWIKI'))
 
 /**
  * A mwlib based conversion backend.
- * 
+ *
  * Installation:
  * You need to install mwlib and the mwlib.rl library. These can be found here: https://github.com/pediapress or they can be installed with python easy_install or pip.
- * 
+ *
  * @author Christian Neubauer
  */
 class MwLibPdfConverter extends PdfConverter {
@@ -16,7 +16,7 @@ class MwLibPdfConverter extends PdfConverter {
 	 * @param Array $options An array of options
 	 */
 	function initialize(&$options) {}
-	
+
 	/**
 	 * Ouput the Pdf.
 	 * @param Array $pages An array of page names.
@@ -29,7 +29,7 @@ class MwLibPdfConverter extends PdfConverter {
 
 		// Since mwlib operates on raw wikitext, it can only handle one file at a time.
 		$page = $pages[0];
-		
+
 		# Write the content type to the client...
 		$wgOut->disable();
 		header("Content-Type: application/pdf");
@@ -38,16 +38,16 @@ class MwLibPdfConverter extends PdfConverter {
 		} else {
 			header(sprintf('Content-Disposition: inline; filename="%s.pdf"', $options['filename']));
 		}
-		
+
 		// TODO gather output
 		$tmpFile = tempnam(sys_get_temp_dir(), 'mw-pdf-');
 		$output = array();
 		exec($wgPdfExportMwLibPath.' --config '.$wgServer.$wgScriptPath.'/ --output '.$tmpFile.' --writer rl '.escapeshellarg($page), $output);
-		
+
 		readfile( $tmpFile );
 		unlink( $tmpFile );
 	}
-	
+
 	/**
 	 * Get the HTML for a page. This function should filter out any code that the converter can't handle like <script> tags.
 	 * @param String $page The page name
@@ -56,7 +56,7 @@ class MwLibPdfConverter extends PdfConverter {
 	function getPageHtml($page, $options) {
 		return '';
 	}
-	
+
 	/**
 	 * Get any CSS that needs to be added to the page for the PDF tool.
 	 * @param String $page The page name

@@ -1,7 +1,7 @@
 <?php
 if ( !defined( 'MEDIAWIKI' ) )
 	die();
-	
+
 /**
  * A factory to create Pdf documents. This factory creates a Pdf converter depending on which Pdf packages are installed on the server. The factory prefers in order: PrinceXML, DomPdf, HtmlDoc.
  */
@@ -15,7 +15,7 @@ class PdfConverterFactory {
 		if ($wgPdfExportPrincePath) {
 			return new PrincePdfConverter();
 		}
-		
+
 		if ($wgPdfExportMwLibPath) {
 			return new MwLibPdfConverter();
 		}
@@ -36,7 +36,7 @@ class PdfConverterFactory {
 				return new HtmlDocPdfConverter();
 			}
 		}
-		
+
 		// @TODO Throw an exception?
 		return null;
 	}

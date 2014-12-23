@@ -4,11 +4,11 @@ if (!defined('MEDIAWIKI'))
 
 /**
  * A PrinceXML based conversion backend.
- * 
+ *
  * Installation:
  * Prince can be downloaded from here: http://www.princexml.com/download/.
  * You also need the PHP wrapper from here: http://www.princexml.com/download/wrappers/.
- * 
+ *
  * @author Christian Neubauer
  *
  */
@@ -21,7 +21,7 @@ class PrincePdfConverter extends PdfConverter {
 		global $wgPdfExportPrincePhpInterface;
 		require_once( $wgPdfExportPrincePhpInterface );
 	}
-	
+
 	/**
 	 * Ouput the Pdf.
 	 * @param Array $pages An array of page names.
@@ -34,7 +34,7 @@ class PrincePdfConverter extends PdfConverter {
 		foreach( $pages as $page ) {
 			$html = $this->getPageHtml($page, $options);
 		}
-		
+
 		// TODO handle this error somehow
 		if (!$html) {
 			return null;
@@ -47,14 +47,14 @@ class PrincePdfConverter extends PdfConverter {
 			wfDebugLog('pdf', "Princexml is not installed correctly.");
 			return null;
 		}
-		
+
 		$error = false;
 		$prince = new Prince($wgPdfExportPrincePath );
-		
+
 		// TODO Make this configurable
 		$logfile = getcwd().'/logs/prince_pdf.log';
 		$prince->setLog($logfile);
-		
+
 		if ($options['pass_protect'] == 'yes') {
 			$prince->setEncryptInfo(128, $options['user_pass'], $options['owner_pass'], $options['perm_print'], $options['perm_modify'], $options['perm_copy'], $options['perm_annotate']);
 		}
@@ -81,7 +81,7 @@ class PrincePdfConverter extends PdfConverter {
 			echo $pdf;
 		}
 	}
-	
+
 	/**
 	 * Get the HTML for a page. This function should filter out any code that the converter can't handle like <script> tags.
 	 * @param String $page The page name
@@ -91,7 +91,7 @@ class PrincePdfConverter extends PdfConverter {
 		global $wgUser;
 		global $wgParser;
 		global $wgScriptPath;
-		global $wgServer;					
+		global $wgServer;
 		global $wgPdfExportHttpsImages;
 		global $wgRawHtml;
 		global $wgPdfExportMaxImageWidth;
@@ -101,12 +101,12 @@ class PrincePdfConverter extends PdfConverter {
 			// @TODO throw error
 			return null;
 		}
-		
+
 		if( !$title->userCan( 'read' ) ) {
 			// @TODO throw error
 			return null;
 		}
-		
+
 		$article = new Article($title);
 		$parserOptions = ParserOptions::newFromUser( $wgUser );
 		$parserOptions->setEditSection( false );
@@ -121,7 +121,7 @@ class PrincePdfConverter extends PdfConverter {
 		// add the '"'. so links pointing to other wikis do not get erroneously converted.
 		$bhtml = str_replace ('"'.$wgScriptPath, '"'.$wgServer . $wgScriptPath, $bhtml);
 		$bhtml = str_replace ('/w/',$wgServer . '/w/', $bhtml);
-		
+
 		// remove scripts
 		$bhtml = preg_replace('/<script[^>]*?>.*?><\/script>/is', '$1', $bhtml);
 
@@ -129,11 +129,11 @@ class PrincePdfConverter extends PdfConverter {
 		$bhtml = preg_replace ('/height="\d+"/', '', $bhtml);
 		// set upper limit for width
 		$bhtml = preg_replace ('/width="(\d+)"/e', '"width=\"".($1> $wgPdfExportMaxImageWidth ? $wgPdfExportMaxImageWidth : $1)."\""', $bhtml);
- 
+
 		if ($wgPdfExportHttpsImages) {
 			$bhtml = str_replace('img src=\"https:\/\/','img src=\"http:\/\/', $bhtml);
 		}
-		
+
 		$css = $this->getPageCss( $page, $options );
 		$page = utf8_decode( $page );
 		$html = <<<EOD
@@ -152,7 +152,7 @@ EOD;
 
 		return $html;
 	}
-	
+
 	/**
 	 * Get any CSS that needs to be added to the page for the PDF tool.
 	 * @param String $page The page name
@@ -176,7 +176,7 @@ EOD;
 		$marginsides = $options['marginsides'];
 		// $bottom_css represents specific CSS for PDF conversion only, will not effect the html
 		// may need to change left & right margins to 2.54cm if converting PDF to a Word Document
-		
+
 		// TODO fix font family to use value in options
 		$bottom_css = <<<EOD
 			@page {
