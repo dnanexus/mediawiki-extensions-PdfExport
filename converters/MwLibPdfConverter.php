@@ -24,6 +24,9 @@ class MwLibPdfConverter extends PdfConverter {
 	 */
 	function outputPdf($pages, $options) {
 		global $wgPdfExportMwLibPath;
+		global $wgPdfExportUsername;
+		global $wgPdfExportPassword;
+		global $wgPdfExportDomain;
 		global $wgPdfExportAttach;
 		global $wgOut, $wgServer, $wgScriptPath;
 
@@ -42,10 +45,27 @@ class MwLibPdfConverter extends PdfConverter {
 		// TODO gather output
 		$tmpFile = tempnam(sys_get_temp_dir(), 'mw-pdf-');
 		$output = array();
-		exec($wgPdfExportMwLibPath.' --config '.$wgServer.$wgScriptPath.'/ --output '.$tmpFile.' --writer rl '.escapeshellarg($page), $output);
+		$auth = "";
+
+		if ($wgPdfExportUsername && $wgPdfExportPassword) {
+			$auth = "--username='$wgPdfExportUsername' --password='$wgPdfExportPassword'";
+			if ($wgPdfExportDomain) {
+				$auth .= " --domain='$wgPdfExportDomain'";
+			}
+		}
+
+		error_log($wgPdfExportMwLibPath.'/mw-zip --config '.$wgServer.$wgScriptPath.'/ '.$auth.' --output '.$tmpFile.'.zip '.escapeshellarg($page));
+		exec($wgPdfExportMwLibPath.'/mw-zip --config '.$wgServer.$wgScriptPath.'/ '.$auth.' --output '.$tmpFile.'.zip '.escapeshellarg($page), $output);
+		error_log($wgPdfExportMwLibPath.'/mw-render --config '.$tmpFile.'.zip --output '.$tmpFile.' --writer rl '.escapeshellarg($page));
+		exec($wgPdfExportMwLibPath.'/mw-render --config '.$tmpFile.'.zip --output '.$tmpFile.' --writer rl '.escapeshellarg($page), $output);
 
 		readfile( $tmpFile );
+		unlink( $tmpFile.'.zip' );
 		unlink( $tmpFile );
+
+		foreach ($output as $line) {
+			error_log($line);
+		}
 	}
 
 	/**
